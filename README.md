@@ -90,7 +90,8 @@ But this ain’t your typical bloated LangChain pipeline:
 git clone https://github.com/p-doshi/RAGosaurus.git
 
 cd RAGosaurus
-**---
+
+---
 
 ## 📦 Requirements
 Python 3.10+
