@@ -19,14 +19,20 @@ No plug-and-play RAG pipeline that eats codebases and spits out coherent answers
 - You don’t need an RTX 4090.  
 - Works on dusty GPUs with just **6GB VRAM** (tested on 1660 Ti).  
 - Actually generates useful answers.  
-- No over-engineered LangChain spaghetti.  
+- No over-engineered LangChain spaghetti.
+- SBERT + FAISS options for retrieval — because variety is the spice of life.
 
 ---
 
 ## 🔧 How It Works
 
-- 🧠 **Encoder:** [`Salesforce/codet5-base`](https://huggingface.co/Salesforce/codet5-base) handles code chunk embeddings.  
-- 📦 **Retriever:** FAISS does vector search. You can also try SBERT.  
+- 🧠 **Encoders**
+- CodeT5: Salesforce/codet5-base for code-aware embeddings.
+- SBERT (optional): all-MiniLM-L6-v2 for semantic code/document matching.
+- Custom pooling: Mean-pooled last hidden states with attention mask weighting for more stable embeddings.  
+- 📦 **Retriever:** Retriever
+  -Flat L2 index for fast similarity search, persisted to disk.
+  -SBERT pipeline: Cosine similarity search over precomputed normalized embeddings.
 - ✍️ **Generator:** [`microsoft/phi-2`](https://huggingface.co/microsoft/phi-2) generates the final answers.
 
 Yes, we handle token truncation and all that windowing magic behind the scenes.
@@ -63,24 +69,24 @@ print(answer)
 ---
 
 # 🧪 What You Can Play With
-Swap FAISS with SBERT if you're into semantic vibes
+- Swap FAISS with SBERT if you're into semantic vibes
 
-Adjust top_k retrieved chunks (2, 5, 10, 420?)
+- Adjust top_k retrieved chunks (2, 5, 10, 420?)
 
-Tweak prompt templates
+- Tweak prompt templates or more verbose or terse answers.
 
-Compare baseline vs. tuned generation
+- Compare baseline vs.reranked retrieval quality.
 
 ---
 
 # 🔍 Smart-Sounding Observations
-SBERT gives more semantically aligned chunks than FAISS (but slower).
+SBERT retrieval can pull in semantically richer chunks, but sometimes overshoots.
 
-Prompt tweaks dramatically affect output quality.
+FAISS + CodeT5 embeddings excel at syntax-aware matches.
 
-Fetching too many chunks (k > 10) turns answers into token soup.
+Fetching too many chunks (k > 10) turns output into token soup.
 
-Phi-2 does well with technical queries — just don’t overwhelm it.
+Phi-2 is surprisingly good for technical queries — just feed it concise context.
 
 ---
 
@@ -104,11 +110,16 @@ cd RAGosaurus
 ---
 
 ## 📦 Requirements
-Python 3.10+
+- Python 3.10+
+- PyTorch (with or without CUDA)
+- transformers
+- sentence-transformers
+- faiss
+- tqdm
 
-PyTorch (w/ or w/o CUDA)
+GPU optional (but helps)
 
-transformers, sentence-transformers, faiss, tqdm, etc.
+
 
 GPU optional, but helpful
 ---
