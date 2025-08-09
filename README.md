@@ -31,6 +31,16 @@ No plug-and-play RAG pipeline that eats codebases and spits out coherent answers
 
 Yes, we handle token truncation and all that windowing magic behind the scenes.
 
+### Chunking & Indexing
+RAGosaurus uses token-aware overlapping chunking to preserve context in code.
+- **Tokenizer**: Salesforce/codet5-base
+- **Max tokens**: 500 per chunk, stride 100
+- **Overlap**: Ensures function/class definitions aren’t split mid-body.
+- **Caching**: Chunks and embeddings are cached to disk for instant reuse.
+- **Batch embeddings**: 32-chunk batches to minimize GPU memory usage.
+- **Indexing**: FAISS flat L2 index for fast retrieval, persisted to disk.
+
+This design keeps the pipeline fast (<X ms retrieval on 6 GB GPU) while maintaining high retrieval relevance.
 
 
 ---
