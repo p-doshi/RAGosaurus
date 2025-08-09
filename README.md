@@ -11,7 +11,7 @@ No plug-and-play RAG pipeline that eats codebases and spits out coherent answers
 
 ## ✅ Solution?
 
-### 🦖 **RAGosaurus** — a janky but functional notebook implementation where you:
+### 🦖 **RAGosaurus** — a lightweight but functional notebook implementation where you:
 1. Point it at a folder with Python code, and  
 2. Magically start asking questions like “how does `read_csv()` work?”  
 
